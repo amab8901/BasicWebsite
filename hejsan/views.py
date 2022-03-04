@@ -45,9 +45,12 @@ def create(response):
             n = form.cleaned_data["name"]
             t = ToDoList(name=n)
             t.save()
-            response.user.todolist.add(t)
 
-        return HttpResponseRedirect("/%i" %t.id)
+        if str(response.user) != "AnonymousUser":
+            response.user.todolist.add(t)
+            return HttpResponseRedirect("/%i" %t.id)
+        else:
+            return HttpResponseRedirect('/login')
     else:
         form = CreateNewList()
     return render(response, 'hejsan/create.html', {"form": form})
